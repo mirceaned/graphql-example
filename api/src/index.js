@@ -1,5 +1,7 @@
 const { GraphQLServer } = require('graphql-yoga');
 
+// todo - add enum for user type
+// todo - add second type and use it inside user
 const typeDefs = `
     type Query {
         users: [User!]!
@@ -14,6 +16,7 @@ const typeDefs = `
     }
 `;
 
+// todo - add mutation for create user
 const resolvers = {
     Query: {
         users() {

@@ -17,7 +17,6 @@ const userListQuery = gql`
 class UserList extends Component {
 
     render() {
-
         return (
             <Query query={userListQuery}>
                 {({ loading, error, data }) => {
