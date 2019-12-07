@@ -1,4 +1,3 @@
-
 const { GraphQLServer } = require('graphql-yoga');
 
 const typeDefs = `
