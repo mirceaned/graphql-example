@@ -1,23 +1,41 @@
-import React, { Component } from 'react'
-import User from './User'
+import React, { Component } from 'react';
+import User from './User';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
+
+const userListQuery = gql`
+    {
+        users {
+            id
+            birthDate
+            username
+            name
+        }
+    }
+`;
 
 class UserList extends Component {
+
     render() {
-        const usersToRender = [
-            {
-                id: '1',
-                name: 'John',
-            },
-            {
-                id: '2',
-                name: 'Mary'
-            },
-        ];
 
         return (
-            <div>{usersToRender.map(user => <User user={user}/>)}</div>
+            <Query query={userListQuery}>
+                {({ loading, error, data }) => {
+                    if (loading) return <div>Fetching</div>;
+                    if (error) return <div>Error</div>;
+
+                    const usersToRender = data.users;
+
+                    return (
+                        <div>
+                            {usersToRender.map(user => <User key={user.id} user={user}/>)}
+                        </div>
+                    )
+                }}
+            </Query>
         )
     }
 }
+
 
 export default UserList;
