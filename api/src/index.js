@@ -8,11 +8,14 @@ const typeDefs = `
         user(id: ID!): User
     }
     
+    type Mutation {
+        createUser(name: String!, birthDate: String): User!
+    }
+    
     type User {
         id: ID!
-        name: String
+        name: String!
         birthDate: String
-        username: String
     }
 `;
 
@@ -26,6 +29,17 @@ const resolvers = {
             return users.find(user => user.id === args.id);
         }
     },
+    Mutation: {
+        createUser: (parent, args) => {
+            const user = {
+                id: 1,
+                name: args.name,
+                birthDate: args.birthDate
+            };
+            users.push(user);
+            return user;
+        }
+    },
 };
 
 const server = new GraphQLServer({
@@ -33,7 +47,7 @@ const server = new GraphQLServer({
     resolvers
 });
 
-server.start(() => console.log("Server is running on http://localhost:4000"));
+server.start(() => console.log("GraphQL server is running on http://localhost:4000"));
 
 const users = [
     {
