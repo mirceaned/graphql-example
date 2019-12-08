@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "node_modules/.bin/nodemon src/index.js --exec babel-node --"
+  },
   "dependencies": {
+    "babel-cli": "^6.26.0",
     "graphql-yoga": "^1.18.3"
+  },
+  "devDependencies": {
+    "babel-node": "0.0.1-security",
+    "nodemon": "^2.0.1"
   }
 }
