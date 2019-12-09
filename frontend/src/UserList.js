@@ -8,7 +8,6 @@ const userListQuery = gql`
         users {
             id
             birthDate
-            username
             name
         }
     }
