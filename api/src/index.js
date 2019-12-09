@@ -26,8 +26,8 @@ const typeDefs = `
    
    
     type Mutation {
-        createUser(userInput: CreateUserInput!): User!
-        createReview(reviewInput: CreateReviewInput!): Review!
+        createUser(userInput: CreateUserInput!): CreateUserResponse!
+        createReview(reviewInput: CreateReviewInput!): CreateReviewResponse!
     }
     
     input CreateUserInput {
@@ -35,7 +35,20 @@ const typeDefs = `
         birthDate: String
     }
     
+    type CreateUserResponse {
+        id: ID!
+        name: String!
+        birthDate: String
+    }
+    
     input CreateReviewInput {
+        authorId: ID!
+        title: String!
+        description: String!
+    }
+    
+    type CreateReviewResponse {
+        id: ID!
         authorId: ID!
         title: String!
         description: String!
@@ -113,7 +126,7 @@ const resolvers = {
 
     Review: {
         author(review) {
-            return getAuthorById(review.authorId);
+            return getAuthorById(review.author.id);
         }
     },
 
@@ -133,11 +146,7 @@ const resolvers = {
             const user = users.find(user => user.id === args.reviewInput.authorId);
             const review = {
                 id: `${reviews.length + 1}`,
-                author: {
-                    id: user.id,
-                    name: user.name,
-                    birthDate: user.birthDate
-                },
+                authorId: user.id,
                 title: args.reviewInput.title,
                 description: args.reviewInput.description
             };
