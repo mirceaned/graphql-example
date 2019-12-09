@@ -1,21 +1,43 @@
 const { GraphQLServer } = require('graphql-yoga');
 
 // todo - add enum for user type
-// todo - add second type and use it inside user
 const typeDefs = `
     type Query {
         users: [User!]!
         user(id: ID!): User
+        reviews: [Review!]!
     }
     
     type Mutation {
-        createUser(name: String!, birthDate: String): User!
+        createUser(userInput: CreateUserInput!): User!
+        createReview(reviewInput: CreateReviewInput!): Review!
+    }
+    
+    input CreateUserInput {
+        name: String!
+        birthDate: String
     }
     
     type User {
         id: ID!
         name: String!
         birthDate: String
+        dodo: String
+        reviews: [Review!]!
+    }
+    
+    input CreateReviewInput {
+        author: String! 
+        title: String!
+        description: String!
+    }
+    
+    type Review {
+        id: ID!
+        authorId: ID!
+        author: User! 
+        title: String!
+        description: String!
     }
 `;
 
@@ -32,6 +54,21 @@ const users = [
     }
 ];
 
+const reviews = [
+    {
+        id: "0",
+        authorId: "1",
+        title: "good",
+        description: "fake review"
+    },
+    {
+        id: "1",
+        authorId: "1",
+        title: "meh",
+        description: "1 star"
+    }
+];
+
 const resolvers = {
     Query: {
         users() {
@@ -39,6 +76,9 @@ const resolvers = {
         },
         user(_, args) {
             return users.find(user => user.id === args.id);
+        },
+        reviews() {
+            return reviews;
         }
     },
     Mutation: {
@@ -50,6 +90,16 @@ const resolvers = {
             };
             users.push(user);
             return user;
+        },
+
+        createReview: (parent, args) => {
+            const review = {
+                id: `${reviews.length+1}`,
+                title: args.title,
+                description: args.description
+            };
+            reviwws.push(review);
+            return review;
         }
     },
 };
