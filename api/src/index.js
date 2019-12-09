@@ -121,15 +121,16 @@ const resolvers = {
         createUser: (parent, args) => {
             const user = {
                 id: `${users.length + 1}`,
-                name: args.name,
-                birthDate: args.birthDate,
+                name: args.userInput.name,
+                birthDate: args.userInput.birthDate,
+                reviews: []
             };
             users.push(user);
             return user;
         },
 
         createReview: (parent, args) => {
-            const user = users.find(user => user.id === args.authorId);
+            const user = users.find(user => user.id === args.reviewInput.authorId);
             const review = {
                 id: `${reviews.length + 1}`,
                 author: {
@@ -137,8 +138,8 @@ const resolvers = {
                     name: user.name,
                     birthDate: user.birthDate
                 },
-                title: args.title,
-                description: args.description
+                title: args.reviewInput.title,
+                description: args.reviewInput.description
             };
             reviews.push(review);
             return review;
