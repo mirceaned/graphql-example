@@ -19,7 +19,21 @@ const typeDefs = `
     }
 `;
 
-// todo - add mutation for create user
+const users = [
+    {
+        id: "0",
+        name: "Mary",
+        birthDate: "2000-12-10",
+    },
+    {
+        id: "1",
+        name: "Tom",
+        birthDate: "1990-06-23",
+    }
+];
+
+let idCount = users.length;
+
 const resolvers = {
     Query: {
         users() {
@@ -32,7 +46,7 @@ const resolvers = {
     Mutation: {
         createUser: (parent, args) => {
             const user = {
-                id: 1,
+                id: `${idCount++}`,
                 name: args.name,
                 birthDate: args.birthDate
             };
@@ -49,17 +63,3 @@ const server = new GraphQLServer({
 
 server.start(() => console.log("GraphQL server is running on http://localhost:4000"));
 
-const users = [
-    {
-        id: "1",
-        name: "Ada Lovelace",
-        birthDate: "1815-12-10",
-        username: "@ada"
-    },
-    {
-        id: "2",
-        name: "Alan Turing",
-        birthDate: "1912-06-23",
-        username: "@complete"
-    }
-];
