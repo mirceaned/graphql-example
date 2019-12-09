@@ -6,8 +6,25 @@ const typeDefs = `
         users: [User!]!
         user(id: ID!): User
         reviews: [Review!]!
+        review(id: ID!): Review
     }
     
+   type User {
+        id: ID!
+        name: String!
+        birthDate: String
+        reviews: [Review!]!
+    }
+   
+   type Review {
+        id: ID!
+        title: String!
+        description: String!
+        author: User! 
+    }
+     
+   
+   
     type Mutation {
         createUser(userInput: CreateUserInput!): User!
         createReview(reviewInput: CreateReviewInput!): Review!
@@ -18,24 +35,10 @@ const typeDefs = `
         birthDate: String
     }
     
-    type User {
-        id: ID!
-        name: String!
-        birthDate: String
-        reviews: [Review!]!
-    }
-    
     input CreateReviewInput {
         authorId: ID!
         title: String!
         description: String!
-    }
-    
-    type Review {
-        id: ID!
-        title: String!
-        description: String!
-        author: User! 
     }
 `;
 
@@ -70,43 +73,50 @@ const reviews = [
     }
 ];
 
+function getReviewsById(reviewIds) {
+    return reviewIds.map(reviewId => reviews.find(review => review.id === reviewId));
+}
+
+function getUsersWithReviews() {
+    return users;
+}
+
+function getAuthorById(authorId) {
+    return users.find(user => authorId === user.id);
+}
+
+function getReviewsWithUser() {
+    return reviews;
+}
+
 const resolvers = {
     Query: {
         users() {
-            const usersWithReviews = users.map(user => {
-                let userWithReviews = {};
-                userWithReviews.id = user.id;
-                userWithReviews.name = user.name;
-                userWithReviews.birthDate = user.birthDate;
-                if (user.reviewIds.length > 0) {
-                    userWithReviews.reviews = user.reviewIds.map(
-                        reviewId => {
-                            return reviews.find(review => review.id === reviewId)
-                        }
-                    )
-                } else {
-                    userWithReviews.reviews = [];
-                }
-                return userWithReviews;
-            });
-            return usersWithReviews;
+            return getUsersWithReviews();
         },
         user(_, args) {
             return users.find(user => user.id === args.id);
         },
         reviews() {
-            const reviewsWithUser = reviews.map(review => {
-                let reviewWithUser = {};
-                reviewWithUser.id = review.id;
-                reviewWithUser.title = review.title;
-                reviewWithUser.description = review.description;
-                reviewWithUser.author = users.find(userId => review.authorId = userId);
-
-                return reviewWithUser;
-            });
-            return reviewsWithUser;
+            return getReviewsWithUser();
+        },
+        review(_, args) {
+            return reviews.find(review => review.id === args.id);
         },
     },
+
+    User: {
+        reviews(user) {
+            return getReviewsById(user.reviewIds);
+        }
+    },
+
+    Review: {
+        author(review) {
+            return getAuthorById(review.authorId);
+        }
+    },
+
     Mutation: {
         createUser: (parent, args) => {
             const user = {
