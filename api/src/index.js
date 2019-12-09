@@ -22,35 +22,36 @@ const typeDefs = `
         id: ID!
         name: String!
         birthDate: String
-        dodo: String
         reviews: [Review!]!
     }
     
     input CreateReviewInput {
-        author: String! 
+        authorId: ID!
         title: String!
         description: String!
     }
     
     type Review {
         id: ID!
-        authorId: ID!
-        author: User! 
         title: String!
         description: String!
+        author: User! 
     }
 `;
 
+// these would normally be fetched from a database
 const users = [
     {
         id: "0",
         name: "Mary",
         birthDate: "2000-12-10",
+        reviewIds: []
     },
     {
         id: "1",
         name: "Tom",
         birthDate: "1990-06-23",
+        reviewIds: ["0", "1"]
     }
 ];
 
@@ -72,33 +73,64 @@ const reviews = [
 const resolvers = {
     Query: {
         users() {
-            return users;
+            const usersWithReviews = users.map(user => {
+                let userWithReviews = {};
+                userWithReviews.id = user.id;
+                userWithReviews.name = user.name;
+                userWithReviews.birthDate = user.birthDate;
+                if (user.reviewIds.length > 0) {
+                    userWithReviews.reviews = user.reviewIds.map(
+                        reviewId => {
+                            return reviews.find(review => review.id === reviewId)
+                        }
+                    )
+                } else {
+                    userWithReviews.reviews = [];
+                }
+                return userWithReviews;
+            });
+            return usersWithReviews;
         },
         user(_, args) {
             return users.find(user => user.id === args.id);
         },
         reviews() {
-            return reviews;
-        }
+            const reviewsWithUser = reviews.map(review => {
+                let reviewWithUser = {};
+                reviewWithUser.id = review.id;
+                reviewWithUser.title = review.title;
+                reviewWithUser.description = review.description;
+                reviewWithUser.author = users.find(userId => review.authorId = userId);
+
+                return reviewWithUser;
+            });
+            return reviewsWithUser;
+        },
     },
     Mutation: {
         createUser: (parent, args) => {
             const user = {
-                id: `${users.length+1}`,
+                id: `${users.length + 1}`,
                 name: args.name,
-                birthDate: args.birthDate
+                birthDate: args.birthDate,
             };
             users.push(user);
             return user;
         },
 
         createReview: (parent, args) => {
+            const user = users.find(user => user.id === args.authorId);
             const review = {
-                id: `${reviews.length+1}`,
+                id: `${reviews.length + 1}`,
+                author: {
+                    id: user.id,
+                    name: user.name,
+                    birthDate: user.birthDate
+                },
                 title: args.title,
                 description: args.description
             };
-            reviwws.push(review);
+            reviews.push(review);
             return review;
         }
     },
