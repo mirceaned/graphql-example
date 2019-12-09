@@ -126,17 +126,17 @@ const resolvers = {
 
     Review: {
         author(review) {
-            return getAuthorById(review.author.id);
+            return getAuthorById(review.authorId);
         }
     },
 
     Mutation: {
         createUser: (parent, args) => {
             const user = {
-                id: `${users.length + 1}`,
+                id: `${users.length}`,
                 name: args.userInput.name,
                 birthDate: args.userInput.birthDate,
-                reviews: []
+                reviewIds: []
             };
             users.push(user);
             return user;
@@ -145,7 +145,7 @@ const resolvers = {
         createReview: (parent, args) => {
             const user = users.find(user => user.id === args.reviewInput.authorId);
             const review = {
-                id: `${reviews.length + 1}`,
+                id: `${reviews.length}`,
                 authorId: user.id,
                 title: args.reviewInput.title,
                 description: args.reviewInput.description
