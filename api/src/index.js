@@ -32,8 +32,6 @@ const users = [
     }
 ];
 
-let idCount = users.length;
-
 const resolvers = {
     Query: {
         users() {
@@ -46,7 +44,7 @@ const resolvers = {
     Mutation: {
         createUser: (parent, args) => {
             const user = {
-                id: `${idCount++}`,
+                id: `${users.length+1}`,
                 name: args.name,
                 birthDate: args.birthDate
             };
