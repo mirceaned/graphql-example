@@ -130,6 +130,8 @@ const resolvers = {
         }
     },
 
+
+
     Mutation: {
         createUser: (parent, args) => {
             const user = {
@@ -143,7 +145,8 @@ const resolvers = {
         },
 
         createReview: (parent, args) => {
-            const user = users.find(user => user.id === args.reviewInput.authorId);
+            const user = users.find(currentUser => currentUser.id === args.reviewInput.authorId);
+            user.reviewIds.push(reviews.length.toString());
             const review = {
                 id: `${reviews.length}`,
                 authorId: user.id,
