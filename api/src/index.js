@@ -1,6 +1,5 @@
 const { GraphQLServer } = require('graphql-yoga');
 
-// todo - add enum for user type
 const typeDefs = `
     type Query {
         users: [User!]!
@@ -9,20 +8,25 @@ const typeDefs = `
         review(id: ID!): Review
     }
     
-   type User {
+    type User {
         id: ID!
         name: String!
         birthDate: String
+        type: UserType!
         reviews: [Review!]!
     }
-   
-   type Review {
+    
+    type Review {
         id: ID!
         title: String!
         description: String!
         author: User! 
     }
      
+    enum UserType {
+      SUPERUSER
+      OPERATOR
+    }
    
    
     type Mutation {
@@ -33,12 +37,14 @@ const typeDefs = `
     input CreateUserInput {
         name: String!
         birthDate: String
+        type: UserType!
     }
     
     type CreateUserResponse {
         id: ID!
         name: String!
         birthDate: String
+        type: UserType!
     }
     
     input CreateReviewInput {
@@ -61,12 +67,14 @@ const users = [
         id: "0",
         name: "Mary",
         birthDate: "2000-12-10",
+        type: "SUPERUSER",
         reviewIds: []
     },
     {
         id: "1",
         name: "Tom",
         birthDate: "1990-06-23",
+        type: "OPERATOR",
         reviewIds: ["0", "1"]
     }
 ];
@@ -138,6 +146,7 @@ const resolvers = {
                 id: `${users.length}`,
                 name: args.userInput.name,
                 birthDate: args.userInput.birthDate,
+                type: args.userInput.type,
                 reviewIds: []
             };
             users.push(user);

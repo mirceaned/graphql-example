@@ -9,6 +9,7 @@ const userListQuery = gql`
             id
             birthDate
             name
+            type
         }
     }
 `;
