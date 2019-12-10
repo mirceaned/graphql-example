@@ -84,13 +84,13 @@ const reviews = [
         id: "0",
         authorId: "1",
         title: "good",
-        description: "fake review"
+        description: "this is a fake review"
     },
     {
         id: "1",
         authorId: "1",
         title: "meh",
-        description: "1 star"
+        description: "2 stars"
     }
 ];
 
@@ -120,9 +120,6 @@ const resolvers = {
         },
         reviews() {
             return getReviewsWithUser();
-        },
-        review(_, args) {
-            return reviews.find(review => review.id === args.id);
         },
     },
 
