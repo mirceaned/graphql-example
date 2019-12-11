@@ -9,7 +9,8 @@ const typeDefs = `
         review(id: ID!): Review
     }
     
-    type User {
+    # User in the ACME system
+    type User { 
         id: ID!
         name: String!
         birthDate: String
@@ -18,8 +19,8 @@ const typeDefs = `
     }
     
     type Review {
-        id: ID!
-        title: String!
+        id: ID! 
+        title: String! @deprecated
         description: String!
         author: User! 
     }
